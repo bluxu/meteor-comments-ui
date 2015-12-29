@@ -1,7 +1,6 @@
 <template name="commentsBox">
     {{! We have not found any good way to include templates with the same context
         even when using Template.dynamic }}
-
     {{#if customTpl}}
         {{> customTpl }}
     {{else}}
@@ -10,10 +9,12 @@
                 <h3>{{ take key='title' default='Comments'}}</h3>
 
                 {{#if loginAction}}
-                    <div class="alert alert-warning" role="alert">You need to login to {{loginAction}}</div>
+                    <div class="alert alert-warning" role="alert">You must login to {{loginAction}}</div>
                 {{/if}}
 
-                {{> textarea }}
+                {{#unless news}}
+                  {{> textarea }}
+                {{/unless}}
 
                 <div class="media-list comments">
                     {{#each comment}}
@@ -22,7 +23,7 @@
                 </div>
 
                 {{#if hasMoreComments}}
-                    <button type="button" class="btn btn-success btn-lg btn-block loadmore-action">{{ take key='load-more' default='Load more comments' }}</button>
+                    <button type="button" class="btn btn-success btn-block loadmore-action">{{ take key='load-more' default='Load more posts' }}</button>
                 {{/if}}
             {{/if}}
 
@@ -71,12 +72,12 @@
         <div data-id="{{_id}}" class="comment">
             {{> avatar userId=userId }}
             <div class="content">
-                <a class="author">{{user.displayName}}</a>
+                <a class="author" data-user-id="userId">{{user.displayName}}</a>
                 <div class="metadata">
                     <span class="date">{{createdAgo}}</span>
                 </div>
                 <div class="text comment-content" data-id="{{commentId}}">
-                    {{content}}
+                    {{#autolink}}{{#mathjax}}{{content}}{{/mathjax}}{{/autolink}}
                 </div>
                 {{#if image}}
                     <div class="content-image">
@@ -122,9 +123,9 @@
                 {{> avatar userId=userId class="" }}
             </div>
             <div class="media-body comment">
-                <h4 class="media-heading">{{user.displayName}} <small>{{createdAgo}}</small></h4>
+                <h4 class="media-heading"><a class="author" data-user-id="{{userId}}">{{user.displayName}}</a> <small>{{createdAgo}}</small></h4>
                 <div class="content">
-                    <p class="comment-content" data-id="{{commentId}}">{{content}}</p>
+                    {{#mathjax}}<p class="comment-content" data-id="{{commentId}}">{{#autolink}}{{content}}{{/autolink}}</p>{{/mathjax}}
 
                     <div class="actions btn-group btn-group-xs">
                         <div class="btn {{#if hasLiked}}btn-primary{{else}}btn-default{{/if}} like-action" aria-label="Left Align">
@@ -250,6 +251,7 @@
     {{/if}}
 
     {{#if templateIs 'bootstrap' }}
+      <div class="row">
         <form class="{{#if reply}}reply-form{{else}}comment-form{{/if}}" role="form" action="">
             <div class="form-group">
                 <textarea
@@ -257,8 +259,9 @@
                     class="form-control {{#if reply}}create-reply{{else}}create-comment{{/if}}" rows="3"></textarea>
             </div>
             <!-- To do : add logic for not permitted to start a conversation i.e. before you are followed by the person! -->
-            <button type="submit" class="btn btn-primary">{{ take key=addButtonKey default=addButtonText }}</button>
+            <button type="submit" class="btn btn-default btn-xs pull-right add-post">{{ take key=addButtonKey default=addButtonText }}</button>
         </form>
+      </div>
     {{/if}}
 
     {{#if templateIs 'ionic' }}
