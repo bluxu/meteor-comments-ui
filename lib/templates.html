@@ -72,7 +72,7 @@
         <div data-id="{{_id}}" class="comment">
             {{> avatar userId=userId }}
             <div class="content">
-                <a class="author" data-user-id="userId">{{user.displayName}}</a>
+                <a class="author" data-user-id="userId">{{user.displayName}}{{toName}}</a>
                 <div class="metadata">
                     <span class="date">{{createdAgo}}</span>
                 </div>
@@ -123,10 +123,21 @@
                 {{> avatar userId=userId class="" }}
             </div>
             <div class="media-body comment">
-                <h4 class="media-heading"><a class="author" data-user-id="{{userId}}">{{user.displayName}}</a> <small>{{createdAgo}}</small></h4>
+                <h4 class="media-heading">
+                  <a class="author" data-user-id="{{userId}}">{{user.displayName}}</a>
+                  {{#if isNewsAndConversation}}
+                     to
+                    <a class="author" data-user-id="{{referenceId}}">{{toUserName}}</a>
+                  {{/if}}
+                  <small>{{createdAgo}}</small></h4>
                 <div class="content">
-                    {{#mathjax}}<p class="comment-content" data-id="{{commentId}}">{{#autolink}}{{content}}{{/autolink}}</p>{{/mathjax}}
-
+                    <div class="comment">{{#mathjax}}<p class="comment-content" data-id="{{commentId}}">{{#autolink}}{{content}}{{/autolink}}</p>{{/mathjax}}
+                    </div>
+                      {{#if image}}
+                          <div class="content-image">
+                              <img src="{{image}}"/>
+                          </div>
+                      {{/if}}
                     <div class="actions btn-group btn-group-xs">
                         <div class="btn {{#if hasLiked}}btn-primary{{else}}btn-default{{/if}} like-action" aria-label="Left Align">
                             <small>{{likesCount}}</small>
