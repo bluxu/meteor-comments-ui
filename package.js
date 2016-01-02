@@ -1,7 +1,7 @@
 Package.describe({
   name: 'efhughes:comments-ui',
   summary: 'Simple templates for disqus-like comment functionality. Modified for collabor8.',
-  version: '0.3.1',
+  version: '0.3.2',
   git: ''
 });
 
